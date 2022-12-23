@@ -17,11 +17,14 @@ guess.classList.add('guess');
 const score = document.createElement('p');
 score.classList.add('score');
 
-for (let i = 1; i <= 32; i++) {
+const teamLogoArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16,
+17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 52, 53, 54, 55];
+
+for (let i = 0; i <= teamLogoArr.length-1; i++) {
   const button = document.createElement('button');
   button.classList.add('grid-button');
-  button.id = `${i}`;
-  button.innerHTML = `<img src="https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/${i}.svg" height=50 id=${i}>`;
+  button.id = `${teamLogoArr[i]}`;
+  button.innerHTML = `<img src="https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/${teamLogoArr[i]}.svg" height=50 id=${teamLogoArr[i]}>`;
   buttonGrid.appendChild(button);
 }
 
