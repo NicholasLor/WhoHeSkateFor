@@ -17,6 +17,9 @@ guess.classList.add('guess');
 const score = document.createElement('p');
 score.classList.add('score');
 
+const guessesHistoryTable = document.createElement('ul');
+guessesHistoryTable.classList.add('guesses-history-table');
+
 const teamLogoArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16,
 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 52, 53, 54, 55];
 
@@ -38,6 +41,7 @@ document.body.appendChild(guess);
 addClickEventsToButtonGrid(buttonGrid);
 container.appendChild(buttonGrid);
 document.body.appendChild(container);
+document.body.appendChild(guessesHistoryTable);
 
 var data;
 
@@ -74,6 +78,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
       // log the button ID when the button is clicked
       
       let teamguess = `${event.target.getAttribute('id')}`;
+      var correctBool;
 
       console.log(`Button clicked:`+teamguess);
       // console.log(playerdata);
@@ -81,6 +86,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
 
       if(teamguess == playerdata.team_id){
         console.log("Correct Guess!");
+        correctBool = String.fromCodePoint(0x2705) + ' ' + playerdata.player_fullName;
         main();
         
         correctGuesses++;
@@ -89,20 +95,32 @@ function addClickEventsToButtonGrid(buttonGrid) {
         console.log(correctGuesses+"/"+totalGuesses);
         score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 
+        addToGuessesHistory(correctBool);
+
 
       } else {
         console.log("Incorrect Guess");
         main();
 
         totalGuesses++;
+        correctBool = String.fromCodePoint(0x274C)  + ' ' + playerdata.player_fullName;
+
 
         console.log(correctGuesses+"/"+totalGuesses);
         score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
+
+        addToGuessesHistory(correctBool);
       }
 
       
 
     });
   });
+}
+
+function addToGuessesHistory(guessBool){
+  var li = document.createElement("li");
+  li.appendChild(document.createTextNode(guessBool));
+  guessesHistoryTable.appendChild(li);
 }
 

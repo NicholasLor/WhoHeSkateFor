@@ -30,6 +30,10 @@ public class player {
         this.player_fullName = player_fullName;
     }
 
+    public String getPlayerPhoto(){
+        
+    }
+
     @Override
     public String toString() {
         return "player{" +
