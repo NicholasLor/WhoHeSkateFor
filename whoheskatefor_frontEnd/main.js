@@ -42,10 +42,49 @@ for (let i = 0; i <= teamLogoArr.length-1; i++) {
   buttonGrid.appendChild(button);
 }
 
-// function createResultsGrid(){
-//   for(let i = 0; i<=4;i++){
-//     const 
-//   }
+function addResultRow(correctBool, playerdata, teamguess){
+  var tbodyRef = document.getElementById('results-table').getElementsByTagName('tbody')[0];
+
+  // Insert a row at the end of table
+  var newRow = tbodyRef.insertRow();
+
+  // Image of player
+  var playerCell = newRow.insertCell();
+  var img = document.createElement('img');
+  img.src = randPlayerImage.src;
+  img.width = 75;
+  playerCell.appendChild(img);
+
+
+  // Score Emoji
+  var scoreCell = newRow.insertCell();
+  var div = document.createElement('div'), // create DIV element
+  txt = document.createTextNode(correctBool); // create text node
+  div.appendChild(txt);                    // append text node to the DIV
+  scoreCell.appendChild(div);    
+
+  // Image of Guessed Team
+  var guessedTeamCell = newRow.insertCell();
+  var img = document.createElement('img');
+  img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg"
+  img.width = 75;
+  guessedTeamCell.appendChild(img);
+
+  // Image of Actual Team
+  var actualTeamCell = newRow.insertCell();
+  var img = document.createElement('img');
+  img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata+ ".svg"
+  img.width = 75;
+  actualTeamCell.appendChild(img);
+
+  // var scoreCell = newRow.insertCell();
+
+  // var score_p = document.createElement('p');
+  // p.innerHTML = correctBool;
+  // scoreCell.appendChild(score_p);
+
+
+}
 
 
 let correctGuesses= 0;
@@ -78,13 +117,25 @@ async function getRandomPlayer() {
 var playerdata = "";
 
 async function main() {
-  playerdata = await getRandomPlayer();q
+  playerdata = await getRandomPlayer();
 }
 
 main();
 
 const teamguessarray = [];
 const actualTeamArray = [];
+const playerarray = [];
+
+function playAgain(){
+  const playagainButton = document.getElementById('play-again');
+  playagainButton.addEventListener('click',event => {
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = "";
+
+  })
+}
+
+
 
 
 function addClickEventsToButtonGrid(buttonGrid) {
@@ -106,14 +157,18 @@ function addClickEventsToButtonGrid(buttonGrid) {
       if(teamguess == playerdata.team_id){
         console.log("Correct Guess!");
         correctBool = String.fromCodePoint(0x2705) + "  ";
+        playerarray.push(playerdata.src);
         teamguessarray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg");
         actualTeamArray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata.team_id + ".svg");
         console.log(actualTeamArray)
         console.log(teamguessarray)
         // + ' ' + playerdata.player_fullName;
 
+        addResultRow(correctBool, playerdata.team_id, teamguess);
+
         main();
         
+
         correctGuesses++;
         totalGuesses++;
 
@@ -123,7 +178,8 @@ function addClickEventsToButtonGrid(buttonGrid) {
         addToGuessesHistory(correctBool);
 
         if (totalGuesses == 5){
-          endOfGame();
+          $(".modal").modal("show");
+          // endOfGame();
           resetScores();
           main();
         } 
@@ -131,14 +187,20 @@ function addClickEventsToButtonGrid(buttonGrid) {
 
       } else {
         console.log("Incorrect Guess");
+        playerarray.push(playerdata.src);
         teamguessarray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg");
         actualTeamArray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata.team_id + ".svg");
         console.log(teamguessarray)
         console.log(actualTeamArray)
+
+        correctBool = String.fromCodePoint(0x274C) + "  "
+        addResultRow(correctBool, playerdata.team_id, teamguess);
+        
         main();
 
+
         totalGuesses++;
-        correctBool = String.fromCodePoint(0x274C) + "  "
+
         //+ ' ' + playerdata.player_fullName;
 
 
@@ -151,6 +213,8 @@ function addClickEventsToButtonGrid(buttonGrid) {
           $(".modal").modal("show");
           resetScores();
           main();
+          
+          
         }
       }
 
@@ -171,3 +235,4 @@ function resetScores(){
   score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 }
 
+playAgain();
