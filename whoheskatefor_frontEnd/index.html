@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,60 +10,46 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  
 
-  </head>
+</head>
 
+<body>
 
-  <body>
-    <h2>Who He Skate For?</h2>
+    <div class="jumbotron">
+        <h1 class="display-4">Who He Skate For?</h1>
+        <p class="lead">Inspired by the segment <a href="https://youtu.be/nvZt5d8RFr0?t=281" target="_blank">Who He Play For</a> from Inside the NBA on TNT.</p>
 
-    <!-- Button to Open the Modal
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-      Open modal
-    </button> -->
+        <hr class="my-4">
+        
+        <form>
+            <div class="form-group row">
+                <label for="numberofPlayers" class="col-sm-2 col-form-label">Number of Players</label>
+                
+                <input type="range" class="form-range" min="5" max="20" step="5" id="customRange3" value="5" onInput="$('#rangeval').html($(this).val())">
+                <p id="rangeval">5</p>
 
-    <!-- The Modal -->
-    <div class="modal" id="myModal" data-backdrop="static" data-keyboard="false" href="#">
-      <div class="modal-dialog">
-        <div class="modal-content">
+            </div>
 
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Results</h4>
-          </div>
+            <div class="form-group row">
+                <div class="col-sm-2 col-form-label">Show Player Jerseys</div>
+                <div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck1">
+                    <label class="form-check-label" for="gridCheck1">
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-          <!-- Modal body -->
-          <div class="modal-body">
-            <table class="table" id="results-table">
-              <thead>
-                <tr>
-                  <th scope="col">Player</th>
-                  <th scope="col">Score</th>
-                  <th scope="col">Guessed Team</th>
-                  <th scope="col">Actual Team</th>
+        
+        </form>
 
-                </tr>
-              </thead>
-              <tbody id="tbody">
-            
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn-primary" data-dismiss="modal" id="play-again">Play Again</button>
-          </div>
-
-        </div>
+        <a class="btn btn-primary btn-lg" href="/game.html" role="button">Start Game</a>
       </div>
-    </div>
-
-    <img id="random-player-photo"></img>
-    <p id="random-player"></p>
 
 
-    <script type="module" src="/main.js"></script>
-  </body>
+
+    <script type="module" src="/menu.js"></script>
+    
+</body>
 </html>
