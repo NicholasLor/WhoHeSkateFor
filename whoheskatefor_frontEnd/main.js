@@ -50,17 +50,28 @@ function addResultRow(correctBool, playerdata, teamguess){
 
   // Image of player
   var playerCell = newRow.insertCell();
+
+  // get playername
+  var playerdiv = document.createElement('div');
+  var playername = document.createElement('p');
+  playername = document.createTextNode(randPlayer.innerHTML);
+
+  // get image
   var img = document.createElement('img');
   img.src = randPlayerImage.src;
+  img.style.display = "block";
   img.width = 75;
-  playerCell.appendChild(img);
 
+  // append player name and image
+  playerdiv.appendChild(img);
+  playerdiv.appendChild(playername);
+  playerCell.appendChild(playerdiv);
 
   // Score Emoji
   var scoreCell = newRow.insertCell();
   var div = document.createElement('div'), // create DIV element
   txt = document.createTextNode(correctBool); // create text node
-  div.appendChild(txt);                    // append text node to the DIV
+  div.appendChild(txt); // append text node to the DIV
   scoreCell.appendChild(div);    
 
   // Image of Guessed Team
