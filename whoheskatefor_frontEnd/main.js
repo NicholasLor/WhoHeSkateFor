@@ -56,11 +56,13 @@ function addResultRow(correctBool, playerdata, teamguess){
   var playername = document.createElement('p');
   playername = document.createTextNode(randPlayer.innerHTML);
 
+  // playername.style.fontSize = 8;
+
   // get image
   var img = document.createElement('img');
   img.src = randPlayerImage.src;
   img.style.display = "block";
-  img.width = 75;
+  img.width = 50;
 
   // append player name and image
   playerdiv.appendChild(img);
@@ -78,14 +80,14 @@ function addResultRow(correctBool, playerdata, teamguess){
   var guessedTeamCell = newRow.insertCell();
   var img = document.createElement('img');
   img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg"
-  img.width = 75;
+  img.width = 50;
   guessedTeamCell.appendChild(img);
 
   // Image of Actual Team
   var actualTeamCell = newRow.insertCell();
   var img = document.createElement('img');
   img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata+ ".svg"
-  img.width = 75;
+  img.width = 50;
   actualTeamCell.appendChild(img);
 
   // var scoreCell = newRow.insertCell();
