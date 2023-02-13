@@ -12,6 +12,7 @@ import lombok.Setter;
 public class player {
 
     private int team_id;
+    
     @Id
     private Long player_id;
 

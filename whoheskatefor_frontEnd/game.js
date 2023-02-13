@@ -53,10 +53,9 @@ function addResultRow(correctBool, playerdata, teamguess){
 
   // get playername
   var playerdiv = document.createElement('div');
+  playerdiv.className = "table-cell";
   var playername = document.createElement('p');
   playername = document.createTextNode(randPlayer.innerHTML);
-
-  // playername.style.fontSize = 8;
 
   // get image
   var img = document.createElement('img');
@@ -71,6 +70,7 @@ function addResultRow(correctBool, playerdata, teamguess){
 
   // Score Emoji
   var scoreCell = newRow.insertCell();
+  scoreCell.className = "table-cell"
   var div = document.createElement('div'), // create DIV element
   txt = document.createTextNode(correctBool); // create text node
   div.appendChild(txt); // append text node to the DIV
@@ -78,6 +78,7 @@ function addResultRow(correctBool, playerdata, teamguess){
 
   // Image of Guessed Team
   var guessedTeamCell = newRow.insertCell();
+  guessedTeamCell.className = "table-cell";
   var img = document.createElement('img');
   img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg"
   img.width = 50;
@@ -89,13 +90,6 @@ function addResultRow(correctBool, playerdata, teamguess){
   img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata+ ".svg"
   img.width = 50;
   actualTeamCell.appendChild(img);
-
-  // var scoreCell = newRow.insertCell();
-
-  // var score_p = document.createElement('p');
-  // p.innerHTML = correctBool;
-  // scoreCell.appendChild(score_p);
-
 
 }
 
@@ -147,8 +141,6 @@ function playAgain(){
 
   })
 }
-
-
 
 
 function addClickEventsToButtonGrid(buttonGrid) {
@@ -230,8 +222,6 @@ function addClickEventsToButtonGrid(buttonGrid) {
           
         }
       }
-
-      
 
     });
   });
