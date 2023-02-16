@@ -15,7 +15,6 @@ import java.util.List;
 @CrossOrigin
 public class playerController {
 
-
     private final playerService playerService;
 
     @Autowired
@@ -27,6 +26,5 @@ public class playerController {
     public player getRandomPlayer(){
         return playerService.getRandomPlayer();
     }
-
 
 }

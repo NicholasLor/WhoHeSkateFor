@@ -93,6 +93,19 @@ function addResultRow(correctBool, playerdata, teamguess){
 
 }
 
+var textToShare = "Score - Player - Guessed/Actual\n\n";
+
+async function addTextShareRow(correctBool, playerdata, teamguess){
+
+  var guessedTeam;
+  var actualTeam;
+  guessedTeam = await getTeamName(teamguess);
+  actualTeam = await getTeamName(playerdata)
+
+
+  textToShare += correctBool + " - " + randPlayer.innerHTML + " - (" + guessedTeam + "/" + actualTeam + ")" + "\n";
+
+}
 
 let correctGuesses= 0;
 let totalGuesses = 0;
@@ -115,7 +128,21 @@ async function getRandomPlayer() {
     let data = await response.json();
     randPlayer.innerHTML = data.player_fullName;
     randPlayerImage.src = 'http://nhl.bamcontent.com/images/headshots/current/168x168/' + data.player_id + '.jpg';
+
     return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function getTeamName(team_id) {
+  try {
+
+    let response = await fetch('http://localhost:8080/api/v1/team/'+team_id);
+    let data = await response.json();
+    
+    return data.team_abbreviation;
+
   } catch (error) {
     console.error(error);
   }
@@ -161,7 +188,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
 
       if(teamguess == playerdata.team_id){
         console.log("Correct Guess!");
-        correctBool = String.fromCodePoint(0x2705) + "  ";
+        correctBool = String.fromCodePoint(0x2705);
         playerarray.push(playerdata.src);
         teamguessarray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg");
         actualTeamArray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata.team_id + ".svg");
@@ -170,6 +197,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
         // + ' ' + playerdata.player_fullName;
 
         addResultRow(correctBool, playerdata.team_id, teamguess);
+        addTextShareRow(correctBool, playerdata.team_id, teamguess);
 
         main();
         
@@ -187,6 +215,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
           // endOfGame();
           resetScores();
           main();
+          console.log(textToShare);
         } 
 
 
@@ -198,8 +227,9 @@ function addClickEventsToButtonGrid(buttonGrid) {
         console.log(teamguessarray)
         console.log(actualTeamArray)
 
-        correctBool = String.fromCodePoint(0x274C) + "  "
+        correctBool = String.fromCodePoint(0x274C)
         addResultRow(correctBool, playerdata.team_id, teamguess);
+        addTextShareRow(correctBool, playerdata.team_id, teamguess);
         
         main();
 
@@ -218,6 +248,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
           $(".modal").modal("show");
           resetScores();
           main();
+          console.log(textToShare);
           
           
         }
