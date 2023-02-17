@@ -124,10 +124,21 @@ var data;
 
 async function getRandomPlayer() {
   try {
-    let response = await fetch('http://localhost:8080/api/v1/player/random');
+    let response = await fetch('https://statsapi.web.nhl.com/api/v1/teams/?expand=team.roster');
     let data = await response.json();
-    randPlayer.innerHTML = data.player_fullName;
-    randPlayerImage.src = 'http://nhl.bamcontent.com/images/headshots/current/168x168/' + data.player_id + '.jpg';
+
+    let numTeams = JSON.stringify(Object.keys(data.teams).length);
+    let randTeamNumber = Math.floor(Math.random() * (numTeams - 0 + 1)) + 0;
+
+    let teamRosterLength = JSON.stringify(data['teams'][randTeamNumber]['roster']['roster'].length);
+    let randomteamRosterNumber = Math.floor(Math.random() * (teamRosterLength - 0 + 1)) + 0;
+    let randomPlayerHTML = data['teams'][randTeamNumber]['roster']['roster'][randomteamRosterNumber]
+
+
+    randPlayer.innerHTML = JSON.stringify(randomPlayerHTML);
+
+    // randPlayer.innerHTML = data.player_fullName;
+    // randPlayerImage.src = 'http://nhl.bamcontent.com/images/headshots/current/168x168/' + data.player_id + '.jpg';
 
     return data;
   } catch (error) {
