@@ -34,7 +34,7 @@ const teamLogoArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16,
 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 52, 53, 54, 55];
 let correctGuesses= 0;
 let totalGuesses = 0;
-var playerdata = "";
+var playerdata;
 var data;
 var textToShare = "Score - Player - Guessed/Actual\n\n";
 score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
@@ -107,7 +107,7 @@ function addResultRow(correctBool, playerdata, teamguess){
   // Image of Actual Team
   var actualTeamCell = newRow.insertCell();
   var img = document.createElement('img');
-  img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + 1 + ".svg"
+  img.src = playerdata.getplayerTeamLogoURL();
   img.width = 50;
   actualTeamCell.appendChild(img);
 
@@ -236,7 +236,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
         console.log("Incorrect Guess");
 
         correctBool = String.fromCodePoint(0x274C)
-        addResultRow(correctBool, playerdata.team_id, teamguess);
+        addResultRow(correctBool, playerdata, teamguess);
         // addTextShareRow(correctBool, playerdata.team_id, teamguess);
         
         main();
