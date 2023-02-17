@@ -30,16 +30,36 @@ const resultsGrid = document.createElement('div');
 resultsGrid.classList.add('results-grid');
 
 
-
 const teamLogoArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16,
 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 52, 53, 54, 55];
+let correctGuesses= 0;
+let totalGuesses = 0;
+var playerdata = "";
+var data;
+var textToShare = "Score - Player - Guessed/Actual\n\n";
+score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 
-for (let i = 0; i <= teamLogoArr.length-1; i++) {
-  const button = document.createElement('button');
-  button.classList.add('grid-button');
-  button.id = `${teamLogoArr[i]}`;
-  button.innerHTML = `<img src="https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/${teamLogoArr[i]}.svg" height=50 id=${teamLogoArr[i]}>`;
-  buttonGrid.appendChild(button);
+document.body.appendChild(score);
+document.body.appendChild(guessesHistory);
+document.body.appendChild(guess);
+
+addbuttons();
+addClickEventsToButtonGrid(buttonGrid);
+
+container.appendChild(buttonGrid);
+document.body.appendChild(container);
+
+main();
+playAgain();
+
+function addbuttons(){
+  for (let i = 0; i <= teamLogoArr.length-1; i++) {
+    const button = document.createElement('button');
+    button.classList.add('grid-button');
+    button.id = `${teamLogoArr[i]}`;
+    button.innerHTML = `<img src="https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/${teamLogoArr[i]}.svg" height=50 id=${teamLogoArr[i]}>`;
+    buttonGrid.appendChild(button);
+  }
 }
 
 function addResultRow(correctBool, playerdata, teamguess){
@@ -87,89 +107,77 @@ function addResultRow(correctBool, playerdata, teamguess){
   // Image of Actual Team
   var actualTeamCell = newRow.insertCell();
   var img = document.createElement('img');
-  img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata+ ".svg"
+  img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + 1 + ".svg"
   img.width = 50;
   actualTeamCell.appendChild(img);
 
 }
 
-var textToShare = "Score - Player - Guessed/Actual\n\n";
+class Player{
+  // Player class
 
-async function addTextShareRow(correctBool, playerdata, teamguess){
+  constructor(data){
+    
+    // get total number of teams (32)
+    this.numTeams = JSON.stringify(Object.keys(data.teams).length);
 
-  var guessedTeam;
-  var actualTeam;
-  guessedTeam = await getTeamName(teamguess);
-  actualTeam = await getTeamName(playerdata)
+    // generate random team number
+    this.randTeamNumber = Math.floor(Math.random() * (this.numTeams - 0 + 1)) + 0;
+    
+    // get roster length of random team
+    this.teamRosterLength = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'].length);
+    
+    // get random player on roster
+    this.randomteamRosterNumber = Math.floor(Math.random() * (this.teamRosterLength - 0 + 1)) + 0;
 
+    this.randomPlayerHTML = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]);
+    this.playerTeamId = JSON.stringify(data['teams'][this.randTeamNumber]['id']);
+    this.playerId = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['id']);
+    this.playerName = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['fullName']);
+    this.teamName = JSON.stringify(data['teams'][this.randTeamNumber]['abbreviation']);
+  }
 
-  textToShare += correctBool + " - " + randPlayer.innerHTML + " - (" + guessedTeam + "/" + actualTeam + ")" + "\n";
+  getplayerTeamId(){
+    return this.playerTeamId;
+  }
+
+  getplayerId(){
+    return this.playerId;
+  }
+
+  getplayerName(){
+    return this.playerName;
+  }
+
+  getplayerPhotoURL(){
+    return 'http://nhl.bamcontent.com/images/headshots/current/168x168/' + this.getplayerId() + '.jpg';
+  }
+
+  getplayerTeamLogoURL(){
+    return 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/' + this.getplayerTeamId() + '.svg'
+  }
 
 }
-
-let correctGuesses= 0;
-let totalGuesses = 0;
-
-score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
-document.body.appendChild(score);
-document.body.appendChild(guessesHistory);
-document.body.appendChild(guess);
-addClickEventsToButtonGrid(buttonGrid);
-container.appendChild(buttonGrid);
-document.body.appendChild(container);
-
-
-var data;
-
 
 async function getRandomPlayer() {
   try {
     let response = await fetch('https://statsapi.web.nhl.com/api/v1/teams/?expand=team.roster');
     let data = await response.json();
 
-    let numTeams = JSON.stringify(Object.keys(data.teams).length);
-    let randTeamNumber = Math.floor(Math.random() * (numTeams - 0 + 1)) + 0;
-
-    let teamRosterLength = JSON.stringify(data['teams'][randTeamNumber]['roster']['roster'].length);
-    let randomteamRosterNumber = Math.floor(Math.random() * (teamRosterLength - 0 + 1)) + 0;
-    let randomPlayerHTML = data['teams'][randTeamNumber]['roster']['roster'][randomteamRosterNumber]
-
-
-    randPlayer.innerHTML = JSON.stringify(randomPlayerHTML);
-
-    // randPlayer.innerHTML = data.player_fullName;
-    // randPlayerImage.src = 'http://nhl.bamcontent.com/images/headshots/current/168x168/' + data.player_id + '.jpg';
-
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function getTeamName(team_id) {
-  try {
-
-    let response = await fetch('http://localhost:8080/api/v1/team/'+team_id);
-    let data = await response.json();
+    let player = new Player(data);
     
-    return data.team_abbreviation;
+    randPlayer.innerHTML = player.getplayerName();
+    randPlayerImage.src = player.getplayerPhotoURL();
 
+    return player;
   } catch (error) {
     console.error(error);
   }
 }
-
-var playerdata = "";
 
 async function main() {
   playerdata = await getRandomPlayer();
 }
-
-main();
-
-const teamguessarray = [];
-const actualTeamArray = [];
-const playerarray = [];
 
 function playAgain(){
   const playagainButton = document.getElementById('play-again');
@@ -179,7 +187,6 @@ function playAgain(){
 
   })
 }
-
 
 function addClickEventsToButtonGrid(buttonGrid) {
   // get all the buttons in the grid
@@ -197,18 +204,13 @@ function addClickEventsToButtonGrid(buttonGrid) {
       // console.log(playerdata);
 
 
-      if(teamguess == playerdata.team_id){
+      if(teamguess == playerdata.playerTeamId){
         console.log("Correct Guess!");
         correctBool = String.fromCodePoint(0x2705);
-        playerarray.push(playerdata.src);
-        teamguessarray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg");
-        actualTeamArray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata.team_id + ".svg");
-        console.log(actualTeamArray)
-        console.log(teamguessarray)
-        // + ' ' + playerdata.player_fullName;
 
-        addResultRow(correctBool, playerdata.team_id, teamguess);
-        addTextShareRow(correctBool, playerdata.team_id, teamguess);
+
+        addResultRow(correctBool, playerdata, teamguess);
+        // addTextShareRow(correctBool, playerdata.team_id, teamguess);
 
         main();
         
@@ -232,15 +234,10 @@ function addClickEventsToButtonGrid(buttonGrid) {
 
       } else {
         console.log("Incorrect Guess");
-        playerarray.push(playerdata.src);
-        teamguessarray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg");
-        actualTeamArray.push("https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + playerdata.team_id + ".svg");
-        console.log(teamguessarray)
-        console.log(actualTeamArray)
 
         correctBool = String.fromCodePoint(0x274C)
         addResultRow(correctBool, playerdata.team_id, teamguess);
-        addTextShareRow(correctBool, playerdata.team_id, teamguess);
+        // addTextShareRow(correctBool, playerdata.team_id, teamguess);
         
         main();
 
@@ -279,5 +276,3 @@ function resetScores(){
   guessesHistory.textContent = "";
   score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 }
-
-playAgain();
