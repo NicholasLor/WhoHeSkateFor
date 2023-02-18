@@ -29,13 +29,13 @@ guessesHistory.classList.add('guesses-history');
 const resultsGrid = document.createElement('div');
 resultsGrid.classList.add('results-grid');
 
-
 const teamLogoArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16,
 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 52, 53, 54, 55];
+
 let correctGuesses= 0;
 let totalGuesses = 0;
 var playerdata;
-var data;
+
 var textToShare = "Score - Player - Guessed/Actual\n\n";
 score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 
@@ -68,27 +68,27 @@ function addResultRow(correctBool, playerdata, teamguess){
   // Insert a row at the end of table
   var newRow = tbodyRef.insertRow();
 
-  // Image of player
+  // COLUMN: Image of player
   var playerCell = newRow.insertCell();
 
-  // get playername
-  var playerdiv = document.createElement('div');
-  playerdiv.className = "table-cell";
-  var playername = document.createElement('p');
-  playername = document.createTextNode(randPlayer.innerHTML);
+    // get playername
+    var playerdiv = document.createElement('div');
+    playerdiv.className = "table-cell";
+    var playername = document.createElement('p');
+    playername = document.createTextNode(randPlayer.innerHTML);
 
-  // get image
-  var img = document.createElement('img');
-  img.src = randPlayerImage.src;
-  img.style.display = "block";
-  img.width = 50;
+    // get image
+    var img = document.createElement('img');
+    img.src = randPlayerImage.src;
+    img.style.display = "block";
+    img.width = 50;
 
-  // append player name and image
-  playerdiv.appendChild(img);
-  playerdiv.appendChild(playername);
-  playerCell.appendChild(playerdiv);
+    // append player name and image
+    playerdiv.appendChild(img);
+    playerdiv.appendChild(playername);
+    playerCell.appendChild(playerdiv);
 
-  // Score Emoji
+  // COLUMN: Score Emoji
   var scoreCell = newRow.insertCell();
   scoreCell.className = "table-cell"
   var div = document.createElement('div'), // create DIV element
@@ -96,15 +96,28 @@ function addResultRow(correctBool, playerdata, teamguess){
   div.appendChild(txt); // append text node to the DIV
   scoreCell.appendChild(div);    
 
-  // Image of Guessed Team
+  // COLUMN: Image of Guessed Team
   var guessedTeamCell = newRow.insertCell();
-  guessedTeamCell.className = "table-cell";
-  var img = document.createElement('img');
-  img.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg"
-  img.width = 50;
-  guessedTeamCell.appendChild(img);
 
-  // Image of Actual Team
+      // get team name of player
+      var teamNamediv = document.createElement('div');
+      teamNamediv.className = "table-cell";
+      var teamNameText = document.createElement('p');
+      teamNameText = document.createTextNode(playerdata.getteamName());
+
+      // get team logo
+      var guessedTeamLogoImg = document.createElement('img');
+      guessedTeamLogoImg.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg"
+      guessedTeamLogoImg.style.display = "block";
+      guessedTeamLogoImg.width = 50;
+
+      // append guessed team logo and name to cell
+      teamNamediv.appendChild(guessedTeamLogoImg);
+      teamNamediv.appendChild(teamNameText);
+      guessedTeamCell.appendChild(teamNamediv);
+
+
+  // COLUMN: Image of Actual Team
   var actualTeamCell = newRow.insertCell();
   var img = document.createElement('img');
   img.src = playerdata.getplayerTeamLogoURL();
@@ -114,27 +127,48 @@ function addResultRow(correctBool, playerdata, teamguess){
 }
 
 class Player{
-  // Player class
+  // Player class, to keep track of players shown to end user and tracked for scoring purposes and result print at the end
 
   constructor(data){
     
     // get total number of teams (32)
-    this.numTeams = JSON.stringify(Object.keys(data.teams).length);
+    this.numTeams = JSON.stringify(Object.keys(data.teams).length)-1;
 
     // generate random team number
-    this.randTeamNumber = Math.floor(Math.random() * (this.numTeams - 0 + 1)) + 0;
-    
+    this.randTeamNumber = Math.floor(Math.random() * (this.numTeams - 0 + 1));
+
+
+    // debug log pt. 1
+    console.log("----------------")
+    console.log(data)
+    console.log("numTeams: "+typeof(this.numTeams)+" "+this.numTeams);
+    console.log("randTeamNumber: "+typeof(this.randTeamNumber)+" "+this.randTeamNumber);
+
     // get roster length of random team
-    this.teamRosterLength = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'].length);
+    this.teamRosterLength = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'].length)-1;
     
     // get random player on roster
     this.randomteamRosterNumber = Math.floor(Math.random() * (this.teamRosterLength - 0 + 1)) + 0;
 
+    // set player attributes: id, team id, name, team name
     this.randomPlayerHTML = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]);
     this.playerTeamId = JSON.stringify(data['teams'][this.randTeamNumber]['id']);
+
+    // debug log pt. 2
+    console.log("this.teamRosterLength: "+typeof(this.teamRosterLength)+" "+this.teamRosterLength);
+    console.log("this.randomteamRosterNumber: "+typeof(this.randomteamRosterNumber)+" "+this.randomteamRosterNumber);
+
+
+    console.log(data['teams'][this.randTeamNumber]);
+
     this.playerId = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['id']);
     this.playerName = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['fullName']);
     this.teamName = JSON.stringify(data['teams'][this.randTeamNumber]['abbreviation']);
+
+    console.log("playerId: " + typeof(playerId)+" "+this.playerId);
+    console.log("playerteamId: " + typeof(playerTeamId)+" "+this.playerTeamId);
+
+
   }
 
   getplayerTeamId(){
@@ -149,12 +183,18 @@ class Player{
     return this.playerName;
   }
 
+  // get their headshot image
   getplayerPhotoURL(){
     return 'http://nhl.bamcontent.com/images/headshots/current/168x168/' + this.getplayerId() + '.jpg';
   }
 
+  // get logo of team they play for
   getplayerTeamLogoURL(){
     return 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/' + this.getplayerTeamId() + '.svg'
+  }
+
+  getteamName(){
+    return this.teamName;
   }
 
 }
@@ -204,7 +244,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
       // console.log(playerdata);
 
 
-      if(teamguess == playerdata.playerTeamId){
+        if(teamguess == playerdata.getplayerTeamId()){
         console.log("Correct Guess!");
         correctBool = String.fromCodePoint(0x2705);
 
