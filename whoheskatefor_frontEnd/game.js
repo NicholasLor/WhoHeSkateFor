@@ -129,6 +129,7 @@ function addResultRow(correctBool, playerdata, teamguess, teamguessName){
       // get actual team logo
       var actualTeamLogoimg = document.createElement('img');
       actualTeamLogoimg.src = playerdata.getplayerTeamLogoURL();
+      actualTeamLogoimg.style.display = "block";
       actualTeamLogoimg.width = 50;
 
       // append actual team logo and name to cell
@@ -174,8 +175,8 @@ class Player{
     console.log(data['teams'][this.randTeamNumber]);
 
     this.playerId = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['id']);
-    this.playerName = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['fullName']);
-    this.teamName = JSON.stringify(data['teams'][this.randTeamNumber]['abbreviation']);
+    this.playerName = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['fullName']).replace(/"/g, '');
+    this.teamName = JSON.stringify(data['teams'][this.randTeamNumber]['abbreviation']).replace(/"/g, '');
 
     console.log("playerId: " + typeof(playerId)+" "+this.playerId);
     console.log("playerteamId: " + typeof(playerTeamId)+" "+this.playerTeamId);
@@ -249,7 +250,7 @@ async function getGuessedTeamName(teamId) {
 
     for(var i =0; i < data['teams'].length; i++){
       if(teamId == data['teams'][i]['id']){
-        teamName = JSON.stringify(data['teams'][i]['abbreviation']);
+        teamName = JSON.stringify(data['teams'][i]['abbreviation']).replace(/"/g, '');
       }
     }
 
