@@ -62,7 +62,7 @@ function addbuttons(){
   }
 }
 
-function addResultRow(correctBool, playerdata, teamguess){
+function addResultRow(correctBool, playerdata, teamguess, teamguessName){
   var tbodyRef = document.getElementById('results-table').getElementsByTagName('tbody')[0];
 
   // Insert a row at the end of table
@@ -99,13 +99,13 @@ function addResultRow(correctBool, playerdata, teamguess){
   // COLUMN: Image of Guessed Team
   var guessedTeamCell = newRow.insertCell();
 
-      // get team name of player
+      // get guessed team name of player
       var teamNamediv = document.createElement('div');
       teamNamediv.className = "table-cell";
       var teamNameText = document.createElement('p');
-      teamNameText = document.createTextNode(playerdata.getteamName());
+      teamNameText = document.createTextNode(teamguessName);
 
-      // get team logo
+      // get guessed team logo
       var guessedTeamLogoImg = document.createElement('img');
       guessedTeamLogoImg.src = "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/" + teamguess + ".svg"
       guessedTeamLogoImg.style.display = "block";
@@ -119,10 +119,22 @@ function addResultRow(correctBool, playerdata, teamguess){
 
   // COLUMN: Image of Actual Team
   var actualTeamCell = newRow.insertCell();
-  var img = document.createElement('img');
-  img.src = playerdata.getplayerTeamLogoURL();
-  img.width = 50;
-  actualTeamCell.appendChild(img);
+
+      // get actual team name of player
+      var actualteamNamediv = document.createElement('div');
+      actualteamNamediv.className = "table-cell";
+      var actualteamNameText = document.createElement('p');
+      actualteamNameText = document.createTextNode(playerdata.getteamName());
+
+      // get actual team logo
+      var actualTeamLogoimg = document.createElement('img');
+      actualTeamLogoimg.src = playerdata.getplayerTeamLogoURL();
+      actualTeamLogoimg.width = 50;
+
+      // append actual team logo and name to cell
+      actualteamNamediv.appendChild(actualTeamLogoimg);
+      actualteamNamediv.appendChild(actualteamNameText);
+      actualTeamCell.appendChild(actualteamNamediv);
 
 }
 
@@ -228,16 +240,40 @@ function playAgain(){
   })
 }
 
+async function getGuessedTeamName(teamId) {
+  try {
+    let response = await fetch('https://statsapi.web.nhl.com/api/v1/teams/?expand=team.roster');
+    let data = await response.json();
+
+    var teamName;
+
+    for(var i =0; i < data['teams'].length; i++){
+      if(teamId == data['teams'][i]['id']){
+        teamName = JSON.stringify(data['teams'][i]['abbreviation']);
+      }
+    }
+
+    return teamName
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
+
 function addClickEventsToButtonGrid(buttonGrid) {
   // get all the buttons in the grid
   const buttons = buttonGrid.querySelectorAll('button');
 
   // add a click event listener to each button
   buttons.forEach(button => {
-    button.addEventListener('click', event => {
+    button.addEventListener('click', async event => {
       // log the button ID when the button is clicked
       
       let teamguess = `${event.target.getAttribute('id')}`;
+      var teamguessName;
+      teamguessName = await getGuessedTeamName(teamguess);
       var correctBool;
 
       console.log(`Button clicked:`+teamguess);
@@ -249,7 +285,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
         correctBool = String.fromCodePoint(0x2705);
 
 
-        addResultRow(correctBool, playerdata, teamguess);
+        addResultRow(correctBool, playerdata, teamguess, teamguessName);
         // addTextShareRow(correctBool, playerdata.team_id, teamguess);
 
         main();
@@ -276,7 +312,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
         console.log("Incorrect Guess");
 
         correctBool = String.fromCodePoint(0x274C)
-        addResultRow(correctBool, playerdata, teamguess);
+        addResultRow(correctBool, playerdata, teamguess, teamguessName);
         // addTextShareRow(correctBool, playerdata.team_id, teamguess);
         
         main();
