@@ -45,6 +45,26 @@ var playerGuessArray = [];
 var textToShare = "";
 score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 
+// logic to decide whether we crop jerseys or not
+  var urlParams = new URLSearchParams(window.location.search);
+  var cropPlayerJerseys = urlParams.get('cropPlayerJerseys');
+
+  if (cropPlayerJerseys === 'true') {
+    // Call a function in game.js with the checkbox value
+    // console.log("Set player jerseys crop to true")
+  } else {
+    // Call a function in game.js without the checkbox value
+    showFullJersey();
+  }
+
+function showFullJersey(){
+  var imagediv = document.getElementById('random-player-photo-container');
+  imagediv.classList.remove("cut");
+
+  var image = document.getElementById('random-player-photo');
+  image.classList.remove("cut-img");
+}
+
 document.body.appendChild(score);
 document.body.appendChild(guessesHistory);
 document.body.appendChild(guess);
@@ -58,6 +78,7 @@ document.body.appendChild(container);
 main();
 playAgain();
 shareTextResults();
+
 
 function addbuttons(){
   for (let i = 0; i <= teamLogoArr.length-1; i++) {
@@ -159,7 +180,6 @@ function addTextShareRow(correctBool, playerdata, teamguessName){
   teamGuessArray.push(teamguessName);
   playerGuessArray.push(playerdata.getteamName());
 
-  // console.log(scoreArray);
 
 }
 
@@ -173,7 +193,7 @@ function formatTextShareRow(){
     textToShare += "  " + scoreArray.at(i) + "  | " + playerNameArray.at(i).padEnd(maxPlayerNameLength," ") + " | " + teamGuessArray.at(i) + "/" + playerGuessArray.at(i) + "\n";
   }
 
-  console.log(textToShare);
+  // console.log(textToShare);
 
 }
 
@@ -190,10 +210,10 @@ class Player{
 
 
     // debug log pt. 1
-    console.log("----------------")
-    console.log(data)
-    console.log("numTeams: "+typeof(this.numTeams)+" "+this.numTeams);
-    console.log("randTeamNumber: "+typeof(this.randTeamNumber)+" "+this.randTeamNumber);
+    // console.log("----------------")
+    // console.log(data)
+    // console.log("numTeams: "+typeof(this.numTeams)+" "+this.numTeams);
+    // console.log("randTeamNumber: "+typeof(this.randTeamNumber)+" "+this.randTeamNumber);
 
     // get roster length of random team
     this.teamRosterLength = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'].length)-1;
@@ -206,18 +226,18 @@ class Player{
     this.playerTeamId = JSON.stringify(data['teams'][this.randTeamNumber]['id']);
 
     // debug log pt. 2
-    console.log("this.teamRosterLength: "+typeof(this.teamRosterLength)+" "+this.teamRosterLength);
-    console.log("this.randomteamRosterNumber: "+typeof(this.randomteamRosterNumber)+" "+this.randomteamRosterNumber);
+    // console.log("this.teamRosterLength: "+typeof(this.teamRosterLength)+" "+this.teamRosterLength);
+    // console.log("this.randomteamRosterNumber: "+typeof(this.randomteamRosterNumber)+" "+this.randomteamRosterNumber);
 
 
-    console.log(data['teams'][this.randTeamNumber]);
+    // console.log(data['teams'][this.randTeamNumber]);
 
     this.playerId = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['id']);
     this.playerName = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]['person']['fullName']).replace(/"/g, '');
     this.teamName = JSON.stringify(data['teams'][this.randTeamNumber]['abbreviation']).replace(/"/g, '');
 
-    console.log("playerId: " + typeof(playerId)+" "+this.playerId);
-    console.log("playerteamId: " + typeof(playerTeamId)+" "+this.playerTeamId);
+    // console.log("playerId: " + typeof(playerId)+" "+this.playerId);
+    // console.log("playerteamId: " + typeof(playerTeamId)+" "+this.playerTeamId);
 
 
   }
@@ -276,6 +296,17 @@ function playAgain(){
     const tbody = document.getElementById('tbody');
     tbody.innerHTML = "";
 
+    // clear arrays
+    scoreArray = [];
+    playerNameArray = [];
+    teamGuessArray = [];
+    playerGuessArray = [];
+
+    resetScores();
+
+    const shareButton = document.getElementById('share');
+    shareButton.innerHTML = "Share"
+
   })
 }
 
@@ -299,6 +330,8 @@ function shareTextResults(){
     // format text with spaces based on player name
     formatTextShareRow(textToShare);
     copyContent();
+
+    shareButton.innerHTML = "Copied to Clipboard!"
 
     // alert user
     // alert("Results copied to clipboard");
@@ -341,12 +374,12 @@ function addClickEventsToButtonGrid(buttonGrid) {
       teamguessName = await getGuessedTeamName(teamguess);
       var correctBool;
 
-      console.log(`Button clicked:`+teamguess);
+      // console.log(`Button clicked:`+teamguess);
       // console.log(playerdata);
 
 
         if(teamguess == playerdata.getplayerTeamId()){
-        console.log("Correct Guess!");
+        // console.log("Correct Guess!");
         correctBool = String.fromCodePoint(0x2705);
 
 
@@ -358,7 +391,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
         correctGuesses++;
         totalGuesses++;
 
-        console.log(correctGuesses+"/"+totalGuesses);
+        // console.log(correctGuesses+"/"+totalGuesses);
         score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 
         addToGuessesHistory(correctBool);
@@ -366,15 +399,24 @@ function addClickEventsToButtonGrid(buttonGrid) {
         if (totalGuesses == 5){
           $(".modal").modal("show");
           // endOfGame();
-          resetScores();
+          // resetScores();
           main();
+          textToShare = "";
+
+          // input score
+          var modalTitle = document.getElementById('modalResults');
+          modalTitle.innerHTML += correctGuesses+"/"+totalGuesses
+
+
+          var dateText = document.getElementById("date")
+          dateText.innerHTML = new Date().toLocaleDateString();
           // console.log(textToShare);
         } 
 
 
       } else {
 
-        console.log("Incorrect Guess");
+        // console.log("Incorrect Guess");
         correctBool = String.fromCodePoint(0x274C)
 
         addResultRow(correctBool, playerdata, teamguess, teamguessName);
@@ -386,18 +428,25 @@ function addClickEventsToButtonGrid(buttonGrid) {
 
         totalGuesses++;
 
-        //+ ' ' + playerdata.player_fullName;
-
-
-        console.log(correctGuesses+"/"+totalGuesses);
+        // console.log(correctGuesses+"/"+totalGuesses);
         score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 
         addToGuessesHistory(correctBool);
 
-        if (totalGuesses ==5){
+        if (totalGuesses == 5){
+
+          // input score
+          var modalTitle = document.getElementById('modalResults');
+          modalTitle.innerHTML += correctGuesses+"/"+totalGuesses
+
+          // add date
+          var dateText = document.getElementById("date")
+          dateText.innerHTML = new Date().toLocaleDateString();
+
           $(".modal").modal("show");
-          resetScores();
+          // resetScores();
           main();
+          textToShare = "";
           // console.log(textToShare);
           
           
@@ -417,4 +466,9 @@ function resetScores(){
   totalGuesses = 0;
   guessesHistory.textContent = "";
   score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
+
+  // input score
+  var modalTitle = document.getElementById('modalResults');
+  modalTitle.innerHTML = "Results: "
+
 }
