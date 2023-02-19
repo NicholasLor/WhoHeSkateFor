@@ -1,5 +1,3 @@
-
-
 var cropPlayerJerseysCheckBox = document.getElementById('gridCheck1');
 var startGameButton = document.getElementById('startGameButton');
 
@@ -16,5 +14,5 @@ function RedirectWithSettingsApplied(){
 
   
     })
-  }
+}
 
