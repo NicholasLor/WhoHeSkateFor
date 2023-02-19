@@ -34,9 +34,15 @@ const teamLogoArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16,
 
 let correctGuesses= 0;
 let totalGuesses = 0;
-var playerdata;
+var playerdata = "";
+var maxPlayerNameLength = 0;
 
-var textToShare = "Score - Player - Guessed/Actual\n\n";
+var scoreArray = [];
+var playerNameArray = [];
+var teamGuessArray = [];
+var playerGuessArray = [];
+
+var textToShare = "";
 score.innerHTML = "Score: " + correctGuesses + "/"  + totalGuesses;
 
 document.body.appendChild(score);
@@ -51,6 +57,7 @@ document.body.appendChild(container);
 
 main();
 playAgain();
+shareTextResults();
 
 function addbuttons(){
   for (let i = 0; i <= teamLogoArr.length-1; i++) {
@@ -136,6 +143,37 @@ function addResultRow(correctBool, playerdata, teamguess, teamguessName){
       actualteamNamediv.appendChild(actualTeamLogoimg);
       actualteamNamediv.appendChild(actualteamNameText);
       actualTeamCell.appendChild(actualteamNamediv);
+
+}
+
+function addTextShareRow(correctBool, playerdata, teamguessName){
+
+  var playerNameLength = playerdata.getplayerName().length;
+
+  if(playerNameLength > maxPlayerNameLength){
+    maxPlayerNameLength = playerNameLength;
+  } 
+
+  scoreArray.push(correctBool);
+  playerNameArray.push(playerdata.getplayerName());
+  teamGuessArray.push(teamguessName);
+  playerGuessArray.push(playerdata.getteamName());
+
+  // console.log(scoreArray);
+
+}
+
+function formatTextShareRow(){
+
+  textToShare += "WhoHeSkateFor.com - " + "Score: " + correctGuesses + "/" + totalGuesses+ "\n\n";
+
+  textToShare += "Score | " + "Player".padEnd(maxPlayerNameLength," ") + " | " + "Guess/Actual\n\n";
+
+  for(var i = 0; i<scoreArray.length; i++){
+    textToShare += "  " + scoreArray.at(i) + "  | " + playerNameArray.at(i).padEnd(maxPlayerNameLength," ") + " | " + teamGuessArray.at(i) + "/" + playerGuessArray.at(i) + "\n";
+  }
+
+  console.log(textToShare);
 
 }
 
@@ -241,6 +279,33 @@ function playAgain(){
   })
 }
 
+async function copyContent(){
+
+  try {
+    await navigator.clipboard.writeText(textToShare);
+    // console.log('Content copied to clipboard');
+    /* Resolved - text copied to clipboard successfully */
+  } catch (err) {
+    console.log('Failed to copy: ', err);
+    /* Rejected - text failed to copy to the clipboard */
+  }
+
+}
+
+function shareTextResults(){
+  const shareButton = document.getElementById('share');
+  shareButton.addEventListener('click',event => {
+
+    // format text with spaces based on player name
+    formatTextShareRow(textToShare);
+    copyContent();
+
+    // alert user
+    // alert("Results copied to clipboard");
+
+  })
+}
+
 async function getGuessedTeamName(teamId) {
   try {
     let response = await fetch('https://statsapi.web.nhl.com/api/v1/teams/?expand=team.roster');
@@ -260,7 +325,6 @@ async function getGuessedTeamName(teamId) {
     console.error(error);
   }
 }
-
 
 
 function addClickEventsToButtonGrid(buttonGrid) {
@@ -287,8 +351,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
 
 
         addResultRow(correctBool, playerdata, teamguess, teamguessName);
-        // addTextShareRow(correctBool, playerdata.team_id, teamguess);
-
+        addTextShareRow(correctBool, playerdata, teamguessName);
         main();
         
 
@@ -305,17 +368,19 @@ function addClickEventsToButtonGrid(buttonGrid) {
           // endOfGame();
           resetScores();
           main();
-          console.log(textToShare);
+          // console.log(textToShare);
         } 
 
 
       } else {
-        console.log("Incorrect Guess");
 
+        console.log("Incorrect Guess");
         correctBool = String.fromCodePoint(0x274C)
+
         addResultRow(correctBool, playerdata, teamguess, teamguessName);
-        // addTextShareRow(correctBool, playerdata.team_id, teamguess);
-        
+        addTextShareRow(correctBool, playerdata, teamguessName);
+  
+
         main();
 
 
@@ -333,7 +398,7 @@ function addClickEventsToButtonGrid(buttonGrid) {
           $(".modal").modal("show");
           resetScores();
           main();
-          console.log(textToShare);
+          // console.log(textToShare);
           
           
         }
