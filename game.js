@@ -256,7 +256,7 @@ class Player{
 
   // get their headshot image
   getplayerPhotoURL(){
-    return 'http://nhl.bamcontent.com/images/headshots/current/168x168/' + this.getplayerId() + '.jpg';
+    return 'https://nhl.bamcontent.com/images/headshots/current/168x168/' + this.getplayerId() + '.jpg';
   }
 
   // get logo of team they play for
