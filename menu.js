@@ -7,9 +7,9 @@ function RedirectWithSettingsApplied(){
     startGameButton.addEventListener('click',event => {
   
         if (cropPlayerJerseysCheckBox.checked){
-            window.location.href = "game.html?cropPlayerJerseys=true";
+            window.location.href = "game?cropPlayerJerseys=true";
         } else{
-            window.location.href = "game.html";
+            window.location.href = "game";
         }
 
   
