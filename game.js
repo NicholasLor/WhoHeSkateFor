@@ -29,6 +29,8 @@ guessesHistory.classList.add('guesses-history');
 const resultsGrid = document.createElement('div');
 resultsGrid.classList.add('results-grid');
 
+var textToShareP = document.getElementById('text-table-p');
+
 const teamLogoArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16,
 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 52, 53, 54, 55];
 
@@ -85,7 +87,7 @@ function addbuttons(){
     const button = document.createElement('button');
     button.classList.add('grid-button');
     button.id = `${teamLogoArr[i]}`;
-    button.innerHTML = `<img src="https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/${teamLogoArr[i]}.svg" height=50 id=${teamLogoArr[i]}>`;
+    button.innerHTML = `<img src="https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/${teamLogoArr[i]}.svg" id=${teamLogoArr[i]}>`;
     buttonGrid.appendChild(button);
   }
 }
@@ -109,7 +111,7 @@ function addResultRow(correctBool, playerdata, teamguess, teamguessName){
     var img = document.createElement('img');
     img.src = randPlayerImage.src;
     img.style.display = "block";
-    img.width = 50;
+    img.width = 30;
 
     // append player name and image
     playerdiv.appendChild(img);
@@ -185,17 +187,19 @@ function addTextShareRow(correctBool, playerdata, teamguessName){
 
 function formatTextShareRow(){
 
-  textToShare += "WhoHeSkateFor.com - " + "Score: " + correctGuesses + "/" + totalGuesses+ "\n\n";
-
-  textToShare += "Score | " + "Player".padEnd(maxPlayerNameLength," ") + " | " + "Guess/Actual\n\n";
+  //TODO find out how ot preserve spacing rules (doesn't work with plain spaces)
+  textToShare += "WhoHeSkateFor - " + "Score: " + correctGuesses + "/" + totalGuesses+ "\n\n";
+  textToShare += "Score | " + "Player" + " | " + "Guess/Actual\n\n";
 
   for(var i = 0; i<scoreArray.length; i++){
-    textToShare += "  " + scoreArray.at(i) + "  | " + playerNameArray.at(i).padEnd(maxPlayerNameLength," ") + " | " + teamGuessArray.at(i) + "/" + playerGuessArray.at(i) + "\n";
+    textToShare += "  " + scoreArray.at(i) + "  | " + playerNameArray.at(i) + " | " + teamGuessArray.at(i) + "/" + playerGuessArray.at(i) + "\n";
   }
 
-  // console.log(textToShare);
+  
+  textToShareP.innerText = textToShare;
 
 }
+
 
 class Player{
   // Player class, to keep track of players shown to end user and tracked for scoring purposes and result print at the end
@@ -256,12 +260,12 @@ class Player{
 
   // get their headshot image
   getplayerPhotoURL(){
-    return 'https://nhl.bamcontent.com/images/headshots/current/168x168/' + this.getplayerId() + '.jpg';
+    return 'https://assets.nhle.com/mugs/nhl/20222023/' + this.teamName + '/' + this.getplayerId() + '.png';
   }
 
   // get logo of team they play for
   getplayerTeamLogoURL(){
-    return 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/' + this.getplayerTeamId() + '.svg'
+    return 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/' + this.playerTeamId + '.svg'
   }
 
   getteamName(){
@@ -328,10 +332,9 @@ function shareTextResults(){
   shareButton.addEventListener('click',event => {
 
     // format text with spaces based on player name
-    formatTextShareRow(textToShare);
     copyContent();
 
-    shareButton.innerHTML = "Copied to Clipboard!"
+    shareButton.innerHTML = "Results Copied!"
 
     // alert user
     // alert("Results copied to clipboard");
@@ -401,15 +404,15 @@ function addClickEventsToButtonGrid(buttonGrid) {
           // endOfGame();
           // resetScores();
           main();
-          textToShare = "";
+          formatTextShareRow(textToShare);
 
           // input score
           var modalTitle = document.getElementById('modalResults');
           modalTitle.innerHTML += correctGuesses+"/"+totalGuesses
 
 
-          var dateText = document.getElementById("date")
-          dateText.innerHTML = new Date().toLocaleDateString();
+          // var dateText = document.getElementById("date")
+          // dateText.innerHTML = new Date().toLocaleDateString();
           // console.log(textToShare);
         } 
 
@@ -440,13 +443,13 @@ function addClickEventsToButtonGrid(buttonGrid) {
           modalTitle.innerHTML += correctGuesses+"/"+totalGuesses
 
           // add date
-          var dateText = document.getElementById("date")
-          dateText.innerHTML = new Date().toLocaleDateString();
+          // var dateText = document.getElementById("date")
+          // dateText.innerHTML = new Date().toLocaleDateString();
 
           $(".modal").modal("show");
           // resetScores();
           main();
-          textToShare = "";
+          formatTextShareRow(textToShare);
           // console.log(textToShare);
           
           
