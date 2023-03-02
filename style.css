@@ -74,11 +74,7 @@ body {
   min-height: 100vh;
 }
 
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 5px;
-}
+
 
 .grid-button {
   display: flex;
@@ -280,3 +276,8 @@ table {
   border-collapse: collapse;
   }
 
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 5px;
+}
