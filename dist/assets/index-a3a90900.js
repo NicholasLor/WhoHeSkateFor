@@ -1,0 +1,1 @@
+import"./style-fac82e35.js";var e=document.getElementById("gridCheck1"),t=document.getElementById("startGameButton");r();function r(){t.addEventListener("click",n=>{e.checked?window.location.href="game?cropPlayerJerseys=true":window.location.href="game"})}
