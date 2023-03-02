@@ -1,10 +1,4 @@
 
-/* #random-player-photo {
-  width: 168px;
-  height: 100px;
-  object-fit: cover;
-} */
-
 #random-player-photo-container {
   overflow: hidden;
   /* outline:1px solid red; */
@@ -107,13 +101,13 @@ body {
 
 @media (max-width: 1400px) {
   .grid-button img {
-    width: 130px;
-    height: 130px;
+    width: 70px;
+    height: 70px;
   }
 
   .button-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
     gap: 5px;
   }
 
