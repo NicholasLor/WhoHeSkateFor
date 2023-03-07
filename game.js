@@ -1,5 +1,28 @@
 import './style.css'
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyD0iJ9It8YD79fHQnD1eFuCvPLyX6j3wmA",
+  authDomain: "whoheskatefor.firebaseapp.com",
+  projectId: "whoheskatefor",
+  storageBucket: "whoheskatefor.appspot.com",
+  messagingSenderId: "346020627720",
+  appId: "1:346020627720:web:9ae3b5ca15aa60cad558bd",
+  measurementId: "G-17FHBVCRQ2"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const guessesRef = collection(db,'guesses');
+
 const randPlayer = document.getElementById('random-player');
 
 const randPlayerImage = document.getElementById('random-player-photo');
@@ -227,7 +250,7 @@ class Player{
 
     // set player attributes: id, team id, name, team name
     this.randomPlayerHTML = JSON.stringify(data['teams'][this.randTeamNumber]['roster']['roster'][this.randomteamRosterNumber]);
-    this.playerTeamId = JSON.stringify(data['teams'][this.randTeamNumber]['id']);
+    this.playerTeamId  = JSON.stringify(data['teams'][this.randTeamNumber]['id']);
 
     // debug log pt. 2
     // console.log("this.teamRosterLength: "+typeof(this.teamRosterLength)+" "+this.teamRosterLength);
@@ -377,6 +400,25 @@ function addClickEventsToButtonGrid(buttonGrid) {
       teamguessName = await getGuessedTeamName(teamguess);
       var correctBool;
 
+      var guessResultBool = Boolean(teamguess == playerdata.getplayerTeamId());
+
+      console.log(teamguess);
+      console.log(playerdata.getplayerTeamId());
+
+  
+
+      // Add a new document with a generated id.
+      const docRef = await addDoc(collection(db, "guesses"), {
+        playername: playerdata.getplayerName(),
+        playerId: playerdata.getplayerId(),
+        playerTeamId: playerdata.getplayerTeamId(),
+        playerTeamName: playerdata.getteamName(),
+        playerTeamGuess: teamguess,
+        guessResult: guessResultBool,
+        timestamp: serverTimestamp()
+      });
+      console.log("Document written with ID: ", docRef.id);
+
       // console.log(`Button clicked:`+teamguess);
       // console.log(playerdata);
 
@@ -459,6 +501,8 @@ function addClickEventsToButtonGrid(buttonGrid) {
     });
   });
 }
+
+
 
 function addToGuessesHistory(guessBool){
   guessesHistory.textContent += guessBool;
